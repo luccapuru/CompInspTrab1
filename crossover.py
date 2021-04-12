@@ -10,8 +10,11 @@ def crossover(l, q):
 	#q = list(q)
 
 # generating the random number to perform crossover
-	k = random.randint(0, 7)
+	k = random.randint(0, len(l)-1)
 	print("Crossover point :", k)
+	#x = range(int(float(len(l))/2))
+	#for i in range(int(float(len(l))/2)):
+		#print("Teste")
 
 # interchanging the genes
 	for i in range(k, len(l)):
