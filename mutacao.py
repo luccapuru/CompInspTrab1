@@ -13,11 +13,11 @@ m = [
 
 pm =  0.02
 
-for i in m:
+for i1, i in enumerate(m):
     for j in range(len(i)):
         #print("teste")
         if random.random() <= pm:
-            print("oi")
+            print("oi", i1, j)
             if i[j] == 0:
                 i[j] = 1
             else: 

@@ -56,7 +56,7 @@ def Roleta(dist):
 def AtualizaPop(pop, m):
     m1 = [] 
     for i in range(len(m)):
-        m1.append(m[pop[i]])
+        m1.append(copy.deepcopy(m[pop[i]]))
     return m1
 
 def Crossover(l, q):
@@ -71,10 +71,10 @@ def Crossover(l, q):
     return l, q
 
 def Mutacao(pm, m):
-    for i in m:
+    for i1,i in enumerate(m):
         for j in range(len(i)):
             if random.random() <= pm:
-                print("oi")
+                print("oi", i1, j)
                 if i[j] == 0:
                     i[j] = 1
                 else: 
@@ -94,13 +94,13 @@ def Reproducao(pop, m):
             print("Cross", i)
             maux = copy.deepcopy(m)
             maux[crosspares[i][0]], maux[crosspares[i][1]] = Crossover(maux[crosspares[i][0]], maux[crosspares[i][1]])
-            m1.append(maux[crosspares[i][0]])
-            m1.append(maux[crosspares[i][1]])
+            m1.append(copy.deepcopy(maux[crosspares[i][0]]))
+            m1.append(copy.deepcopy(maux[crosspares[i][1]]))
         else:
             print("NCross", i)
-            m1.append(m[crosspares[i][0]])
+            m1.append(copy.deepcopy(m[crosspares[i][0]]))
             print(crosspares[i][0], m[crosspares[i][0]])
-            m1.append(m[crosspares[i][1]])
+            m1.append(copy.deepcopy(m[crosspares[i][1]]))
             print(crosspares[i][1], m[crosspares[i][1]], "\n\n")
     print("M::", m)
     return m1

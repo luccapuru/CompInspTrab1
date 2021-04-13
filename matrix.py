@@ -1,3 +1,5 @@
+import copy
+
 m = [
     [1, 2, 3],
     [4, 5, 6],
@@ -9,25 +11,29 @@ m = [
     [22, 23, 24]
 ]
 
-l = [2, 7, 0, 3, 5, 4, 6, 1]
+l = [2, 2, 0, 3, 5, 4, 6, 1]
 
 m1 = [] 
 for i in range(len(m)):
-    m1.append(m[l[i]])
+    m1.append(copy.deepcopy(m[l[i]]))
 
 
-print(m)
+print(m1)
 
-x = []
-for i in range(4):
-    x.append((l[2*i], l[2*i+1]))
+m1[0][1] = 100
 
-print(x)
+print(m1)
+
+#x = []
+#for i in range(4):
+ #   x.append((l[2*i], l[2*i+1]))
+
+#print(x)
 #print(m[x[1][1]])
 
-for i in range(len(x)):
-    print(x[i][0], m[x[i][0]])
-    print(x[i][1], m[x[i][1]])
+#for i in range(len(x)):
+ #   print(x[i][0], m[x[i][0]])
+  #  print(x[i][1], m[x[i][1]])
 
 #x, y = 1, 3
 
