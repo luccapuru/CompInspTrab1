@@ -70,6 +70,16 @@ def Crossover(l, q):
     print(q, "\n\n")
     return l, q
 
+def Mutacao(pm, m):
+    for i in m:
+        for j in range(len(i)):
+            if random.random() <= pm:
+                print("oi")
+                if i[j] == 0:
+                    i[j] = 1
+                else: 
+                    i[j] = 0
+
 
 def Reproducao(pop, m):
     m1 = [] 
@@ -106,5 +116,7 @@ pop = Roleta(d)
 # = AtualizaPop(pop, matriz)
 #print("M:", matriz)
 matriz1 = Reproducao(pop, matriz)
-#print("M:", matriz)
 print("M':", matriz1)
+Mutacao(0.02, matriz1)
+#print("M:", matriz)
+print("M'':", matriz1)
