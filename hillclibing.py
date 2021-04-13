@@ -22,7 +22,7 @@ def SubindoColina(maxI, mu, sigma, k, g):
     x = SolucaoRandom()
     resulx = CalcFunc(x)
     print("x inicial:", x)    
-    i = 1
+    i = 0
     #Criterio de parada: numero maximo de iteracoes, x nao mudou nas ultimas k iteracoes
     while i < maxI and k >= 0 and resulx != g:
         x1 = perturb(x, mu, sigma)

@@ -24,6 +24,17 @@ m1[0][1] = 100
 
 print(m1)
 
+print(sum(l)/len(l))
+
+m = m1
+
+m[0][0] = 200
+
+print(m)
+print(m1)
+
+print(2 not in l)
+
 #x = []
 #for i in range(4):
  #   x.append((l[2*i], l[2*i+1]))

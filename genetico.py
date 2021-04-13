@@ -24,7 +24,7 @@ def Distancia(m, l):
     dist = [0, 0, 0, 0, 0, 0, 0, 0]
     for i,lista in enumerate(m):
         for j,num in enumerate(lista):
-            if m[i][j] != l[i]:
+            if m[i][j] != l[j]:
                 dist[i] += 1
     return dist
 
@@ -53,11 +53,11 @@ def Roleta(dist):
     #print("M mod:", m)
     return pop
 
-def AtualizaPop(pop, m):
-    m1 = [] 
-    for i in range(len(m)):
-        m1.append(copy.deepcopy(m[pop[i]]))
-    return m1
+#def AtualizaPop(pop, m):
+    #m1 = [] 
+    #for i in range(len(m)):
+        #m1.append(copy.deepcopy(m[pop[i]]))
+    #return m1
 
 def Crossover(l, q):
     cp = random.randint(0, len(l)-1) #ponto de crossover
@@ -105,18 +105,46 @@ def Reproducao(pop, m):
     print("M::", m)
     return m1
 
+def Genetico(bitstring, pc, pm, maxGen):
+    m = PopulacaoRandom() #gera uma populacao inicial aleatoria
+    h = Distancia(m, bitstring) #calcula a distancia de Hamming da pop atual até a bitstring desejada (aptidao)
+    hMedio = []
+    hMedio.append(sum(h)/len(h)) #calcula aptidao media da geracao
+    gen = 0
+    print("h:", h)
+    print("hMedio:", hMedio)
+    print("Gen:", gen)
+    while gen <= maxGen and 12 not in h: #Condicao de Parada: Max de geracoes e aptidao 
+        pop = Roleta(h) #selecao por roleta #retorna os indices da nova populacao
+        m = Reproducao(pop, m)
+        Mutacao(0.02, m)
+        h = Distancia(m, bitstring)
+        hMedio.append(sum(h)/len(h))
+        gen += 1
+        print("h:", h)
+        print("hMedio:", hMedio)
+        print("Gen:", gen)
+    return m 
 
-matriz = PopulacaoRandom()
-print("M:", matriz)
-lt = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] #bitstrig desejada (invertida)
-d = Distancia(matriz, lt)
+#lt = [1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1]
+lt = [0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0]
+taxaMutacao = input("Digite a taxa de mutacao: ")
+taxaCross = input("Digite a taxa de Crossover: ")
+maxGen = input("Digite o maximo de geracoes: ")
+print(Genetico(lt, float(taxaCross), float(taxaMutacao), int(maxGen)))
+
+#matriz = PopulacaoRandom()
+#print("M:", matriz)
+#lt = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] #bitstring desejada (invertida)
+#d = Distancia(matriz, lt)
 #print("D", d)
-pop = Roleta(d)
+#pop = Roleta(d)
 #print(Roleta(d))
 # = AtualizaPop(pop, matriz)
 #print("M:", matriz)
-matriz1 = Reproducao(pop, matriz)
-print("M':", matriz1)
-Mutacao(0.02, matriz1)
+#matriz1 = Reproducao(pop, matriz)
+#print("M':", matriz1)
+#Mutacao(0.02, matriz1)
 #print("M:", matriz)
-print("M'':", matriz1)
+#print("M'':", matriz1)
+
