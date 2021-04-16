@@ -84,4 +84,4 @@ print(CalcFunc(1,1))
 print(Aptidao(m,n))
 #b = input("..:")
 #Escala(int(b))
-
+print(CalcX([1,1,1,1,1,1,1,1,1,1,1,1]))

@@ -134,8 +134,7 @@ def SUS(dist):
             sorteio -= 360
     return pop
 
-def Crossover(l, q):
-    cp = random.randint(0, len(l)-1) #ponto de crossover
+def Crossover(l, q, cp):
     #print(l)
     #print(q)
     #print("Ponto de crossover:", cp)
@@ -155,8 +154,9 @@ def Mutacao(pm, m):
                 else: 
                     i[j] = 0
 
-def Reproducao(pop, m, pc):
-    m1 = [] 
+def Reproducao(pop, m, n, pc):
+    m1 = []
+    n1 = [] 
     #pc = 0.6 #taxa de crossover*
     crosspares = []
     for i in range(int(float(len(pop))/2)): #montando pares
@@ -166,24 +166,32 @@ def Reproducao(pop, m, pc):
         if(random.random() <= pc):
             #m1[crosspares[i][0]], m1[crosspares[i][1]] = Crossover(m[crosspares[i][0]], m[crosspares[i][1]])
             #print("Cross", i)
+            cp = random.randint(0, len(m[0])-1) #ponto de crossover
             maux = copy.deepcopy(m)
-            maux[crosspares[i][0]], maux[crosspares[i][1]] = Crossover(maux[crosspares[i][0]], maux[crosspares[i][1]])
+            naux = copy.deepcopy(n)
+            maux[crosspares[i][0]], maux[crosspares[i][1]] = Crossover(maux[crosspares[i][0]], maux[crosspares[i][1]], cp)
+            naux[crosspares[i][0]], naux[crosspares[i][1]] = Crossover(naux[crosspares[i][0]], naux[crosspares[i][1]], cp)
             m1.append(copy.deepcopy(maux[crosspares[i][0]]))
             m1.append(copy.deepcopy(maux[crosspares[i][1]]))
+            n1.append(copy.deepcopy(naux[crosspares[i][0]]))
+            n1.append(copy.deepcopy(naux[crosspares[i][1]]))
         else:
             #print("NCross", i)
             m1.append(copy.deepcopy(m[crosspares[i][0]]))
             #print(crosspares[i][0], m[crosspares[i][0]])
             m1.append(copy.deepcopy(m[crosspares[i][1]]))
             #print(crosspares[i][1], m[crosspares[i][1]], "\n\n")
+            n1.append(copy.deepcopy(n[crosspares[i][0]]))
+            n1.append(copy.deepcopy(n[crosspares[i][1]]))
     #print("M::", m)
-    return m1
+    return m1, n1
 
 def Genetico(pc, pm, maxGen):
     m, n = PopulacaoRandom() #gera uma populacao inicial aleatoria
-    h = Aptidao(m) #calcula a distancia de Hamming da pop atual até a bitstring desejada (aptidao)
+    h = Aptidao(m, n) #calcula a distancia de Hamming da pop atual até a bitstring desejada (aptidao)
     besth = max(h)
     bestx = m[h.index(besth)]
+    besty = n[h.index(besth)]
     hMedio = []
     hMedio.append(sum(h)/len(h)) #calcula aptidao media da geracao
     gen = 0
@@ -192,23 +200,26 @@ def Genetico(pc, pm, maxGen):
     print("Gen:", gen)
     while gen < maxGen and 1.0 not in h: #Condicao de Parada: Max de geracoes e aptidao 
         #pop = Roleta(h) #selecao por roleta #retorna os indices da nova populacao
-        #pop = Torneio(h)
-        pop = SUS(h)
-        m = Reproducao(pop, m, pc)
+        pop = Torneio(h)
+        #pop = SUS(h)
+        m, n = Reproducao(pop, m, n, pc)
         Mutacao(pm, m)
-        h = Aptidao(m)
+        Mutacao(pm, n)
+        h = Aptidao(m, n)
         hMedio.append(sum(h)/len(h))
         gen += 1
         print("h:", h)
         print("M:", m)
-        #print("hMedio:", hMedio)
+        print("hMedio:", hMedio)
         print("Gen:", gen)
         if besth < max(h):
             besth = max(h)
             bestx = m[h.index(besth)]
+            besty = n[h.index(besth)]
     print("BH:", besth)
-    print("BX:", bestx)
-    return m 
+    print("BX:", bestx, CalcX(bestx))
+    print("BY", besty, CalcX(besty))
+    return m, n 
 
 #lt = [1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1]
 #lt = [0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0]
