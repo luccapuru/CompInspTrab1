@@ -1,6 +1,8 @@
 import random
 import math
 import copy
+import matplotlib.pyplot as plt
+import matplotlib
 
 #inicia a matriz da populacao
 def PopulacaoRandom():
@@ -19,6 +21,13 @@ def PopulacaoRandom():
             m[i][j] = random.randint(0,1)
     return m
 
+def CalcX(lista):
+    x = 0
+    for j in range(len(lista)):
+        x += lista[j]*math.pow(2,-j-1)
+    return x
+
+
 #calculo de distancia entre a um individuo da populacao e a bitstring desejada
 #def Distancia(m, l):
     #dist = [0, 0, 0, 0, 0, 0, 0, 0]
@@ -29,14 +38,11 @@ def PopulacaoRandom():
     #return dist
 
 def Aptidao(m):
-    apt = []
-    x = 0
-    for i in range(len(m)):
-        for j in range(len(m)):
-            x += m[i][j]*math.pow(2,-j-1)
+    apt = [0, 0, 0, 0, 0, 0, 0, 0]
+    for i in range(len(m)-1):
+        x = CalcX(m[i])
         fx = CalcFunc(x)
-        apt.append(fx)
-        x = 0
+        apt[i] = fx
     return apt
         
 
@@ -45,32 +51,32 @@ def CalcFunc(x):
     return result
 
 #selecao por roleta
-def Roleta(dist):
+def Roleta(dist, distMax):
     soma = 0
     distaux = 0
     for i in dist:
         soma += i
+    soma += distMax
     dist1 = []
     pop = []
     for i in range(len(dist)):
         distaux += math.ceil((dist[i]/soma)*360)
         dist1.append(distaux)
-    print(dist1)
+    distaux += round(distMax*360/soma)
+    dist1.append(distaux)
     for i in range(len(dist)):
         sorteio = random.randint(0, 360)
         print(sorteio)
-        for j in range(len(dist)):
+        for j in range(len(dist1)):
             if sorteio <= dist1[j]:
                 pop.append(j)
                 break
-    print("Pop", pop)
-    #for i in range(len(m)):
-        #m[i] = m[pop[i]]
-    #print("M mod:", m)
     return pop
 
-def Torneio(dist):
+def Torneio(dist, distMax):
     pop = []
+    dist.append(distMax)
+    print(dist)
     for i in range(len(dist)):
         sorteio = random.sample(range(len(dist)), 3)
         print(sorteio)
@@ -82,24 +88,24 @@ def Torneio(dist):
             pop.append(sorteio[2])
     return pop
 
-def SUS(dist):
+def SUS(dist, distMax):
     soma = 0
     distaux = 0
     for i in dist:
         soma += i
+    soma += distMax
     dist1 = []
     pop = []
     for i in range(len(dist)):
         distaux += math.ceil((dist[i]/soma)*360)
         dist1.append(distaux)
-    print(dist1)
+    distaux += round(distMax*360/soma)
+    dist1.append(distaux)
     sorteio = random.randint(0, 90)
-    #print("Sorteio 0", sorteio)
     esp = 360/len(dist)
     #agulhas = []
     for i in range(len(dist)):
-        print("Sorteio", i, sorteio)
-        for j in range(len(dist)):
+        for j in range(len(dist1)):
             if sorteio <= dist1[j]:
                 pop.append(j)
                 break
@@ -151,23 +157,27 @@ def Reproducao(pop, m, pc):
             m1.append(copy.deepcopy(m[crosspares[i][1]]))
             #print(crosspares[i][1], m[crosspares[i][1]], "\n\n")
     #print("M::", m)
+    m1.append(copy.deepcopy(m[len(m)-1]))
     return m1
 
-def Genetico(pc, pm, maxGen):
+def Genetico(pc, pm, maxGen, k):
+    kaux = k
     m = PopulacaoRandom() #gera uma populacao inicial aleatoria
     h = Aptidao(m) #calcula a distancia de Hamming da pop atual até a bitstring desejada (aptidao)
     besth = max(h)
     bestx = m[h.index(besth)]
     hMedio = []
+    hMax = []
     hMedio.append(sum(h)/len(h)) #calcula aptidao media da geracao
     gen = 0
     print("h:", h)
     print("hMedio:", hMedio)
     print("Gen:", gen)
-    while gen < maxGen and 1.0 not in h: #Condicao de Parada: Max de geracoes e aptidao 
-        #pop = Roleta(h) #selecao por roleta #retorna os indices da nova populacao
-        #pop = Torneio(h)
-        pop = SUS(h)
+    while gen < maxGen and 1.0 not in h and k >= 0: #Condicao de Parada: Max de geracoes e aptidao 
+        #pop = Roleta(h, besth) #selecao por roleta #retorna os indices da nova populacao
+        #pop = Torneio(h, besth)
+        pop = SUS(h, besth)
+        m.append(bestx)
         m = Reproducao(pop, m, pc)
         Mutacao(pm, m)
         h = Aptidao(m)
@@ -180,8 +190,20 @@ def Genetico(pc, pm, maxGen):
         if besth < max(h):
             besth = max(h)
             bestx = m[h.index(besth)]
+            k = kaux
+        else: 
+            k -= 1
+        hMax.append(besth)
     print("BH:", besth)
-    print("BX:", bestx)
+    print("BX:", bestx, CalcX(bestx))
+    print("GenBest:", m[h.index(max(h))], CalcX(m[h.index(max(h))]))
+    fig, ax = plt.subplots()
+    ax.plot(range(len(hMedio)), hMedio, label = "Aptidão Média")
+    ax.plot(range(len(hMax)), hMax, label = "Aptidão Máxima")
+    ax.set_xlabel("Gerações")  
+    ax.set_ylabel("Aptidão")
+    ax.legend()
+    matplotlib.pyplot.savefig("teste2")
     return m 
 
 #lt = [1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1]
@@ -189,4 +211,5 @@ def Genetico(pc, pm, maxGen):
 taxaMutacao = input("Digite a taxa de mutacao: ")
 taxaCross = input("Digite a taxa de Crossover: ")
 maxGen = input("Digite o maximo de geracoes: ")
-print(Genetico(float(taxaCross), float(taxaMutacao), int(maxGen)))
+maxk = input("Digite o numero max de iteracoes para convergencia: ")
+print(Genetico(float(taxaCross), float(taxaMutacao), int(maxGen), int(maxk)))
