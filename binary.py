@@ -14,14 +14,15 @@ m = [
     [1, 1, 1, 1, 1, 1, 1, 1],
     [1, 1, 1, 1, 1, 1, 0, 1]
 ]
-for i,lista in enumerate(m):
-        for j,num in enumerate(lista):
-            m[i][j] = random.randint(0,1)
+# for i,lista in enumerate(m):
+#         for j,num in enumerate(lista):
+#             m[i][j] = random.randint(0,1)
 apt = []
 x = 0
 for i in range(len(m)):
     for j in range(len(m)):
         x += m[i][j]*math.pow(2,-j-1)
+    print("aaaaaaaaaaa", x)
     fx = CalcFunc(x)
     apt.append(fx)
     x = 0

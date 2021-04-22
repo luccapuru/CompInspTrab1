@@ -33,19 +33,19 @@ def Escala(num):
     }
     return scale.get(num, -1)
 
-def CalcX(lista):
-    x = 0
-    k = 1
-    for j in range(1,4)[::-1]:
-        #print(j)
-        x += lista[k]*math.pow(2,j-1)
-        k += 1
-    x = Escala(x)
-    for j in range(4, len(lista)):
-        x += lista[j]*math.pow(2,-j+3)
-    if lista[0] == 0:
-        x *= -1
-    return x
+# def CalcX(lista):
+#     x = 0
+#     k = 1
+#     for j in range(1,4)[::-1]:
+#         #print(j)
+#         x += lista[k]*math.pow(2,j-1)
+#         k += 1
+#     x = Escala(x)
+#     for j in range(4, len(lista)):
+#         x += lista[j]*math.pow(2,-j+3)
+#     if lista[0] == 0:
+#         x *= -1
+#     return x
 
 def GeraX(lista):
     x = -10
